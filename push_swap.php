@@ -28,6 +28,7 @@ function est_trie($arr) {
 
 
 if (est_trie($la)) {
+    echo "\n";
     exit;
 }
 
