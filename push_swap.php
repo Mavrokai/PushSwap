@@ -4,18 +4,14 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-
 $args = array_slice($argv, 1);
 if (empty($args)) {
     exit;
 }
 
-
 $la = array_map('intval', $args);
 $lb = [];
 $operations = [];
-
-
 
 function est_trie($arr) {
     for ($i = 0; $i < count($arr) - 1; $i++) {
@@ -26,12 +22,10 @@ function est_trie($arr) {
     return true;
 }
 
-
 if (est_trie($la)) {
     echo "\n";
     exit;
 }
-
 
 function sa(&$la, &$operations) {
     if (count($la) >= 2) {
@@ -40,6 +34,20 @@ function sa(&$la, &$operations) {
     }
 }
 
+function sb(&$lb, &$operations) {
+    if (count($lb) >= 2) {
+        [$lb[0], $lb[1]] = [$lb[1], $lb[0]];
+        $operations[] = 'sb';
+    }
+}
+
+function sc(&$la, &$lb, &$operations) {
+    if (count($la) >= 2 && count($lb) >= 2) {
+        [$la[0], $la[1]] = [$la[1], $la[0]];
+        [$lb[0], $lb[1]] = [$lb[1], $lb[0]];
+        $operations[] = 'sc';
+    }
+}
 
 function pb(&$la, &$lb, &$operations) {
     if (!empty($la)) {
@@ -48,14 +56,12 @@ function pb(&$la, &$lb, &$operations) {
     }
 }
 
-
 function pa(&$la, &$lb, &$operations) {
     if (!empty($lb)) {
         array_unshift($la, array_shift($lb));
         $operations[] = 'pa';
     }
 }
-
 
 function ra(&$la, &$operations) {
     if (count($la) >= 2) {
@@ -64,6 +70,20 @@ function ra(&$la, &$operations) {
     }
 }
 
+function rb(&$lb, &$operations) {
+    if (count($lb) >= 2) {
+        array_push($lb, array_shift($lb));
+        $operations[] = 'rb';
+    }
+}
+
+function rr(&$la, &$lb, &$operations) {
+    if (count($la) >= 2 && count($lb) >= 2) {
+        array_push($la, array_shift($la));
+        array_push($lb, array_shift($lb));
+        $operations[] = 'rr';
+    }
+}
 
 function rra(&$la, &$operations) {
     if (count($la) >= 2) {
@@ -72,10 +92,23 @@ function rra(&$la, &$operations) {
     }
 }
 
+function rrb(&$lb, &$operations) {
+    if (count($lb) >= 2) {
+        array_unshift($lb, array_pop($lb));
+        $operations[] = 'rrb';
+    }
+}
+
+function rrr(&$la, &$lb, &$operations) {
+    if (count($la) >= 2 && count($lb) >= 2) {
+        array_unshift($la, array_pop($la));
+        array_unshift($lb, array_pop($lb));
+        $operations[] = 'rrr';
+    }
+}
 
 function trier_trois(&$la, &$operations) {
     if (est_trie($la)) return;
-
 
     $max = max($la);
     $min = min($la);
@@ -93,7 +126,6 @@ function trier_trois(&$la, &$operations) {
     }
 }
 
-
 $taille = count($la);
 if ($taille == 2) {
     if ($la[0] > $la[1]) {
@@ -108,17 +140,14 @@ if ($taille == 2) {
     }
     trier_trois($la, $operations);
 
-
     while (!empty($lb)) {
         $element = $lb[0];
         $position = 0;
         $taille_la = count($la);
 
-
         while ($position < $taille_la && $la[$position] < $element) {
             $position++;
         }
-
 
         $rotations = $position;
         $rotations_inverse = $taille_la - $position;
@@ -136,11 +165,9 @@ if ($taille == 2) {
         pa($la, $lb, $operations);
     }
 
-
     while ($la[0] != min($la)) {
         ra($la, $operations);
     }
 }
-
 
 echo implode(' ', $operations) . "\n";
