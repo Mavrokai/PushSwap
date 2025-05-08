@@ -113,18 +113,27 @@ function trier_trois(&$la, &$operations) {
     $max = max($la);
     $min = min($la);
 
+
     if ($la[0] == $max) {
         ra($la, $operations);
-        trier_trois($la, $operations);
+        if ($la[0] > $la[1]) {
+            sa($la, $operations);
+        }
+
     } elseif ($la[1] == $max) {
-        rra($la, $operations);
-        trier_trois($la, $operations);
+        if ($la[0] > $la[2]) {
+            rra($la, $operations);
+        } else {
+            sa($la, $operations);
+            ra($la, $operations);
+        }
     } else {
         if ($la[0] > $la[1]) {
             sa($la, $operations);
         }
     }
 }
+
 
 $taille = count($la);
 if ($taille == 2) {
@@ -135,38 +144,105 @@ if ($taille == 2) {
     trier_trois($la, $operations);
 } else {
 
-    while (count($la) > 3) {
-        pb($la, $lb, $operations);
-    }
-    trier_trois($la, $operations);
 
-    while (!empty($lb)) {
-        $element = $lb[0];
-        $position = 0;
-        $taille_la = count($la);
+    if ($taille <= 5) {
 
-        while ($position < $taille_la && $la[$position] < $element) {
-            $position++;
-        }
+        $min = min($la);
+        $min_pos = array_search($min, $la);
+        
+        
 
-        $rotations = $position;
-        $rotations_inverse = $taille_la - $position;
-
-        if ($rotations <= $rotations_inverse) {
-            for ($i = 0; $i < $rotations; $i++) {
-                ra($la, $operations);
-            }
-        } else {
-            for ($i = 0; $i < $rotations_inverse; $i++) {
+        if ($min_pos > $taille / 2) {
+            for ($i = 0; $i < $taille - $min_pos; $i++) {
                 rra($la, $operations);
             }
+        } else {
+            for ($i = 0; $i < $min_pos; $i++) {
+                ra($la, $operations);
+            }
+        }
+        
+
+        for ($i = 0; $i < $taille - 1; $i++) {
+            pb($la, $lb, $operations);
         }
 
-        pa($la, $lb, $operations);
-    }
+        
 
-    while ($la[0] != min($la)) {
-        ra($la, $operations);
+        while (!empty($lb)) {
+            $element = $lb[0];
+            $position = 0;
+            $taille_la = count($la);
+            
+
+
+            while ($position < $taille_la && $la[$position] < $element) {
+                $position++;
+            }
+            
+
+            if ($position <= $taille_la / 2) {
+                for ($i = 0; $i < $position; $i++) {
+                    ra($la, $operations);
+                }
+            } else {
+                for ($i = 0; $i < $taille_la - $position; $i++) {
+                    rra($la, $operations);
+                }
+            }
+            
+            pa($la, $lb, $operations);
+        }
+    } else {
+
+
+
+
+        while (count($la) > 3) {
+            pb($la, $lb, $operations);
+        }
+        trier_trois($la, $operations);
+        
+        while (!empty($lb)) {
+            $element = $lb[0];
+            $position = 0;
+            $taille_la = count($la);
+            
+            while ($position < $taille_la && $la[$position] < $element) {
+                $position++;
+            }
+            
+            $rotations = $position;
+            $rotations_inverse = $taille_la - $position;
+            
+            if ($rotations <= $rotations_inverse) {
+                for ($i = 0; $i < $rotations; $i++) {
+                    ra($la, $operations);
+                }
+            } else {
+                for ($i = 0; $i < $rotations_inverse; $i++) {
+                    rra($la, $operations);
+                }
+            }
+            
+            pa($la, $lb, $operations);
+        }
+    }
+    
+
+
+
+
+    $min_pos = array_search(min($la), $la);
+    $taille_la = count($la);
+    if ($min_pos > $taille_la / 2) {
+        for ($i = 0; $i < $taille_la - $min_pos; $i++) {
+            rra($la, $operations);
+        }
+    } else {
+        for ($i = 0; $i < $min_pos; $i++) {
+            ra($la, $operations);
+        }
     }
 }
 
